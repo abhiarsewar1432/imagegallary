@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery || Abhi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #0077b6;
+            font-size: 2rem;
+        }
+        /* Input Area */
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            padding: 20px;
+        }
+        
+        .input-area input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .input-area input:focus {
+            border-color: #0077b6;
+            box-shadow: 0 0 5px rgba(0, 119, 182, 0.3);
+        }
+        
+        .input-area button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+        
+        .input-area button:hover {
+            background-color: #005f8c;
+            transform: scale(1.03);
+        }
+        
+        .display-area {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+        
+        .display-area img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .display-area h3 {
+            margin: 12px 0;
+            color: #0077b6;
+            text-transform: capitalize;
+        }
+        /* Navigation Buttons */
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .nav-buttons button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 8px 8px;
+            padding: 10px 18px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .nav-buttons button:hover {
+            border-radius: 15px 15px;
+            background-color: #005f8c;
+            box-shadow: 0px 1px 10px black;
+        }
+        
+        .nav-buttons button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 600px) {
+            .display-area img {
+                height: 230px;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Image Gallery </h1>
+
+    <div class="input-area">
+        <input type="text" id="imageUrl" placeholder="Enter Image URL">
+        <input type="text" id="imageTitle" placeholder="Enter Image Title">
+        <button id="addImageBtn">Add Image</button>
+    </div>
+
+    <div class="display-area" id="displayArea">
+        <img id="displayImage" src="https://www.mypunepulse.com/wp-content/uploads/2025/11/rashmika-1024x576.jpeg" alt="Gallery Image">
+        <h3 id="displayTitle">Eg: Rashmila </h3>
+
+        <div class="nav-buttons">
+            <button id="prevBtn" disabled>⬅ Previous</button>
+            <button id="nextBtn" disabled>Next ➡</button>
+        </div>
+    </div>
+
+    <script>
+        const addImageBtn = document.getElementById("addImageBtn");
+        const imageUrlInput = document.getElementById("imageUrl");
+        const imageTitleInput = document.getElementById("imageTitle");
+
+        const displayImage = document.getElementById("displayImage");
+        const displayTitle = document.getElementById("displayTitle");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        let images = [];
+        let currentIndex = 0;
+
+
+        addImageBtn.addEventListener("click", function() {
+            const imageUrl = imageUrlInput.value.trim();
+            const imageTitle = imageTitleInput.value.trim();
+
+            if (imageUrl === "" || imageTitle === "") {
+                alert("Please enter both image URL and title!");
+                return;
+            }
+
+            images.push({
+                url: imageUrl,
+                title: imageTitle
+            });
+            currentIndex = images.length - 1;
+            showImage();
+
+            imageUrlInput.value = "";
+            imageTitleInput.value = "";
+        });
+
+
+        function showImage() {
+            if (images.length === 0) {
+                displayImage.src = "https://via.placeholder.com/400x300?text=No+Image";
+                displayTitle.textContent = "No Image Added Yet";
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+            } else {
+                const currentImage = images[currentIndex];
+                displayImage.src = currentImage.url;
+                displayTitle.textContent = currentImage.title;
+
+
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === images.length - 1;
+            }
+        }
+
+
+        prevBtn.addEventListener("click", function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showImage();
+            }
+        });
+
+        nextBtn.addEventListener("click", function() {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                showImage();
+            }
+        });
+    </script>
+</body>
+
+</html>
